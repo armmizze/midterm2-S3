@@ -1,0 +1,145 @@
+<html>
+
+<head>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc11.min.js"></script>
+  <title>UPLOAD TO S3</title>
+  <link rel="stylesheet" href="https://storage.googleapis.com/code.getmdl.io/1.0.1/material.pink-red.min.css">
+  <script src="https://storage.googleapis.com/code.getmdl.io/1.0.1/material.min.js"></script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <script type="text/javascript">
+    // See the Configuring section to configure credentials in the SDK
+
+    AWS.config.update({
+      accessKeyId: 'AKIAIMJ3WEXPSMZ2F53Q',
+      secretAccessKey: 'o2npHawrPMfi8bdl9DnQ7CJK+c52kfWbXMydBQwG',
+      region: 'us-east-1'
+    });
+    // Configure your region
+    // AWS.config.region = �;
+  </script>
+  <style>
+    .demo-card-event.mdl-card {
+      width: 380px;
+      height: 200px;
+      background: #3E4EB8;
+    }
+
+    .demo-card-event > .mdl-card__actions {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .demo-card-event > .mdl-card__title {
+      align-items: flex-start;
+    }
+
+    .demo-card-event > .mdl-card__title > h4 {
+      margin-top: 0;
+    }
+
+    .demo-card-event > .mdl-card__actions {
+      display: flex;
+      box-sizing: border-box;
+      align-items: center;
+    }
+
+    .demo-card-event > .mdl-card__title,
+    .demo-card-event > .mdl-card__actions,
+    .demo-card-event > .mdl-card__actions > .mdl-button {
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 align="center">UPLOAD FILE TO AMEZON S3</h1>
+
+    <br>
+    <br>
+    <br>
+
+    <center>
+
+      <div class="mdl-card mdl-shadow--2dp demo-card-event">
+        <div class="mdl-card__title mdl-card--expand">
+          <form action="#" align="center">
+            <div class="form-group">
+              <label for="exampleInputFile">File input</label>
+              <input type="file" id="file-chooser" />
+            </div>
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="upload-button">Upload to S3</button>
+          </form>
+        </div>
+      </div>
+
+      <br>
+      <br>
+      <br>
+      <div id="p2" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+      <br><br>
+      <div id="results"></div>
+    </center>
+  </div>
+  <script type="text/javascript">
+    var bucket = new AWS.S3({
+      params: {
+        Bucket: 'okokeiei'
+      }
+    });
+
+    var fileChooser = document.getElementById('file-chooser');
+    var button = document.getElementById('upload-button');
+    var results = document.getElementById('results');
+    button.addEventListener('click', function() {
+      var file = fileChooser.files[0];
+      if (file) {
+        results.innerHTML = '';
+
+        var params = {
+          Key: file.name,
+          ContentType: file.type,
+          Body: file
+        };
+        bucket.putObject(params, function(err, data) {
+          results.innerHTML = err ? err : '<div class="alert alert-success" role="alert">UPLOADED.</div>';
+        });
+      } else {
+        results.innerHTML = '<div class="alert alert-danger" role="alert">Nothing to upload.</div>';
+      }
+    }, false);
+  </script>
+  <div id="status"></div>
+  <ul id="objects"></ul>
+  <script type="text/javascript">
+    var bucket = new AWS.S3({
+      params: {
+        Bucket: 'okokeiei'
+      }
+    });
+    bucket.listObjects(function(err, data) {
+      if (err) {
+        document.getElementById('status').innerHTML =
+          'Could not load objects from S3';
+      } else {
+        document.getElementById('status').innerHTML =
+          'Could not load objects from S3';
+      } else {
+        document.getElementById('status').innerHTML =
+          'Loaded ' + data.Contents.length + ' items from S3';
+        for (var i = 0; i < data.Contents.length; i++) {
+          document.getElementById('objects').innerHTML += ' < li > ' + data.Contents[i].Key + ' < /li>';
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
